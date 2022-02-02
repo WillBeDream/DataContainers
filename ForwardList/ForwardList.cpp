@@ -14,17 +14,22 @@ class Element
 {
     int Data;
     Element* pNext;
+    static int count;
 public:
     Element(int Data, Element* pNext=nullptr) :Data(Data), pNext(pNext)
     {
+        count++;
         cout << "EConstructor:\t" << this << endl;
     }
     ~Element()
     {
+        count--;
         cout << "EDestructor:\t" << this << endl;
     }
     friend class ForwardList;
 };
+
+int Element::count = 0;
 
 class ForwardList
 {
@@ -55,22 +60,25 @@ public:
             cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
             Temp = Temp->pNext;
         }
+        cout << "Колличество элементов списка: " << Head->count << endl;
     }
 
     void push_back(int Data)
     {
+        if (Head == nullptr)return push_front(Data);
         Element* New = new Element(Data);
         Element* Temp = Head;
-        while (Temp->pNext!=nullptr)
+        while (Temp->pNext)
         {
             Temp = Temp->pNext;
         }
         Temp->pNext = New;
-        New->pNext = nullptr;
+        
     }
 
     void pop_front()
     {
+        if (Head == nullptr)return;
         Element* Del = Head;
         Head = Head->pNext;
         delete Del;
@@ -78,17 +86,46 @@ public:
 
     void pop_back()
     {
+        if (Head == nullptr)return;
+        if (Head->pNext == nullptr)return pop_front();
         Element* Temp = Head;
-        while (Temp->pNext != nullptr)
+        while (Temp->pNext->pNext!=nullptr)
         {
             Temp = Temp->pNext;
         }
-        delete Temp;
+        delete Temp->pNext;
         Temp->pNext = nullptr;
        
     }
-};
 
+    void insert(int index, int Data)
+    {
+        if (index==0||Head==nullptr)return push_front(Data);
+        if (index>Head->count)return;
+        Element* New = new Element(Data);
+        Element* Temp = Head;
+        for (size_t i = 0; i < index-1; i++)
+        {
+            Temp = Temp->pNext;
+        }
+        New->pNext = Temp->pNext;
+        Temp->pNext = New;
+    }
+
+    void Erase(int index)
+    {
+        if (index == 0 || Head == nullptr)return pop_front();
+        Element* Temp = Head;
+        for (size_t i = 0; i < index-1; i++)
+        {
+            Temp = Temp->pNext;
+        }
+        Element* Del = Temp->pNext;
+        Temp->pNext = Temp->pNext->pNext;
+        delete Del;
+        
+    }
+};
 
 
 int main()
@@ -99,15 +136,22 @@ int main()
     ForwardList list;
     for (size_t i = 0; i < n; i++)
     {
-        list.push_front(rand() % 100);
+        //list.push_front(rand() % 100);
+        list.push_back(rand() % 100);
     }
     list.print();
-    list.push_back(123);
+    //list.push_back(123);
+    //list.pop_front();
+   // list.pop_back();
     list.print();
-    list.pop_back();
+    
+    int index;
+    int value;
+    cin >> index;
+   /* cin >> value;
+    list.insert(index, value);*/
+    list.Erase(index);
     list.print();
-
-
     return 0;
 
 }
