@@ -89,6 +89,14 @@ public:
     {
         return Head;
     }
+    Iterator begin()
+    {
+        return Head;
+    }
+    Iterator end()
+    {
+        return nullptr;
+    }
     ForwardList()
     {
         Head = nullptr;
