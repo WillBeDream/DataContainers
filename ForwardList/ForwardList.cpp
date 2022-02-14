@@ -188,14 +188,14 @@ public:
         size++;
     }
 
-   /* void unique()
-    {
+   void unique()
+   {
         if (Head == nullptr)return;
         for (Element<T>* Temp = Head; Temp; Temp=Temp->pNext)
         {
             for (Element<T>* Temp = Head; Temp; Temp = Temp->pNext)
             {
-                if (Temp->pNext==Temp->pNext->pNext)
+                if (Temp->Data==Temp->pNext->Data)
                 {
                     Element<T>* Del = Temp->pNext->pNext;
                     Temp->pNext = Del->pNext;
@@ -203,7 +203,7 @@ public:
                 }
             }
         }
-    }*/
+   }
 
 
     void print()const
@@ -267,14 +267,14 @@ public:
         Element<T>* prev = nullptr;
         Element<T>* Temp = Head;
         Element<T>* next;
-        while (Temp->pNext)
+        while (Temp)
         {
             next = Temp->pNext;
-
-            
-
-            Temp = Temp->pNext;
+            Temp->pNext = prev;
+            prev = Temp;
+            Temp = next;
         }
+        Head = prev;
     }
 
     void insert(int index, T Data)
@@ -391,7 +391,7 @@ int main()
     }
     cout << endl;
 
-    list.reverse();
+    list.unique();
 
     for (int i : list)
     {
