@@ -28,7 +28,7 @@ class List
             cout << "EDestructor:\t" << this << endl;
         }
         friend class List;
-    }*Head, *Tail;
+    }*Head, * Tail;
     size_t size;
 public:
     class Iterator
@@ -90,11 +90,73 @@ public:
             return old;
         }
     };
+
+    class ReverseIterator
+    {
+        Element* Temp;  
+    public:
+        ReverseIterator(Element* Temp = nullptr) :Temp(Temp)
+        {
+            cout << "RITConstructor:\t" << this << endl;
+        }
+        ~ReverseIterator()
+        {
+            cout << "RITDestructor" << this << endl;
+        }
+        ReverseIterator& operator++()
+        {
+            Temp = Temp->pPrev;
+            return *this;
+        }
+        ReverseIterator& operator++(int)
+        {
+            ReverseIterator old = *this;
+            Temp = Temp->pPrev;
+            return old;
+        }
+        ReverseIterator& operator--()
+        {
+            Temp = Temp->pNext;
+            return *this;
+        }
+        ReverseIterator& operator--(int)
+        {
+            ReverseIterator old = *this;
+            Temp = Temp->pNext;
+            return old;
+        }
+        bool operator ==(const ReverseIterator& other)const
+        {
+            return this->Temp == other.Temp;
+        }
+
+        bool operator !=(const ReverseIterator& other)const
+        {
+            return this->Temp != other.Temp;
+        }
+
+        const int& operator *()const
+        {
+            return Temp->Data;
+        }
+        int& operator *()
+        {
+            return Temp->Data;
+        }
+    };
     Iterator begin()
     {
         return Head;
     }
     Iterator end()
+    {
+        return nullptr;
+    }
+    ReverseIterator rbegin()
+    {
+        return Tail;
+    }
+    ReverseIterator rend()
     {
         return nullptr;
     }
@@ -156,13 +218,13 @@ public:
             size++;
             return;
         }
-        Element* New = new Element(Data);
-        New->pNext = Head;
-        Head->pPrev = New;
-        Head = New;
+       /* Element* New = new Element(Data);
+       New->pNext = Head;
+       Head->pPrev = New;
+       Head = New;*/
+        Head = Head->pPrev = new Element(Data, Head);
         size++;
 
-        /*Head = Head->pPrev = new Element(Data);*/
     }
     void push_back(int Data)
     {
@@ -172,10 +234,11 @@ public:
             size++;
             return;
         }
-        Element* New = new Element(Data);
+        /*Element* New = new Element(Data);
         New->pPrev = Tail;
         Tail->pNext = New;
-        Tail = New;
+        Tail = New;*/
+        Tail = Tail->pNext = new Element(Data, nullptr, Tail);
         size++;
     }
 
@@ -225,11 +288,12 @@ public:
                 Temp = Temp->pPrev;
             }
         }
-        Element* New = new Element(Data);
+       /* Element* New = new Element(Data);
         New->pNext = Temp;
         New->pPrev = Temp->pPrev;
         Temp->pPrev->pNext = New;
-        Temp->pPrev = New;
+        Temp->pPrev = New;*/
+        Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
         size++;
     }
 
@@ -281,8 +345,10 @@ public:
 
 int main()
 {
-#ifdef BASE_CHECK
     setlocale(LC_ALL, "rus");
+
+#ifdef BASE_CHECK
+    
     int n;
     cin >> n;
     List list;
@@ -309,6 +375,12 @@ int main()
         cout << i << tab;
     }
     cout << endl;
+
+    list.insert(3, 25);
+    list.print();
+
+
+
 }
 
 

@@ -191,16 +191,11 @@ public:
    void unique()
    {
         if (Head == nullptr)return;
-        for (Element<T>* Temp = Head; Temp; Temp=Temp->pNext)
+        for (Element<T> Temp=Head; Temp; Temp=Temp->pNext)
         {
-            for (Element<T>* Temp = Head; Temp; Temp = Temp->pNext)
+            for (size_t i = 0; i < length; i++)
             {
-                if (Temp->Data==Temp->pNext->Data)
-                {
-                    Element<T>* Del = Temp->pNext->pNext;
-                    Temp->pNext = Del->pNext;
-                    delete Del;
-                }
+
             }
         }
    }
@@ -384,30 +379,30 @@ int main()
         cout << *it << tab;
     }
     cout << endl;*/
-    ForwardList<int> list = { 3,5,8,8,13,21 };
+    /*ForwardList<int> list = { 3,5,8,8,13,21 };
     for (int i : list)
     {
         cout << i << tab;
     }
     cout << endl;
 
-    list.unique();
+    list.reverse();
 
     for (int i : list)
     {
         cout << i << tab;
     }
-    cout << endl;
+    cout << endl;*/
 
 
-    /*ForwardList<double> d_list = { 2.5, 3.14, 5.2, 8.3 };
+    ForwardList<double> d_list = { 2.5, 3.14, 5.2, 8.3 };
     for (double i : d_list)
     {
         cout << i << tab;
     }
     cout << endl;
 
-    ForwardList<std::string> s_list = { "have", "a", "nice", "day" };
+    /*ForwardList<std::string> s_list = { "have", "a", "nice", "day" };
     for (std::string i : s_list)
     {
         cout << i << tab;
