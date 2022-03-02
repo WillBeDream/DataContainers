@@ -69,6 +69,17 @@ public:
     {
         return size(Root);
     }
+
+    int summ()const
+    {
+        return summ(Root);
+    }
+
+    double avg()const
+    {
+        return avg(Root);
+    }
+
 private:
     void insert(int Data, Element*Root)
     {
@@ -115,6 +126,18 @@ private:
        if (Root == nullptr)return 0;
        else return size(Root->pRight)+size(Root->pLeft)+1;
     }
+    
+    int summ(Element* Root)const
+    {
+        if (Root == nullptr)return 0;
+        else return summ(Root->pLeft) + summ(Root->pRight) + Root->Data;
+    }
+
+    double avg(Element* Root)const
+    {
+        if (Root == nullptr)return 0;
+        else return double(summ(Root->pLeft) + summ(Root->pRight) + Root->Data) / double(size(Root->pRight) + size(Root->pLeft) + 1);
+    }
 
     void print(Element* Root)const
     {
@@ -155,7 +178,7 @@ int main()
     }
     tree.print();
     cout << endl;
-    cout<<tree.size()<<endl;
+    cout << tree.avg()<<endl;
    
 }
 
