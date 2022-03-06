@@ -12,6 +12,7 @@ using std::endl;
 
 class Tree 
 {
+protected:
     class Element
     {
         int Data;
@@ -26,7 +27,14 @@ class Tree
         {
             cout << "EDestructor:\t" << this << endl;
         }
+
+        bool is_leaf()const
+        {
+            return pLeft == pRight;
+        }
+
         friend class Tree;
+        friend class UniqueTree;
     }*Root;
 public:
     Element* getRoot()const
@@ -40,8 +48,25 @@ public:
         cout << "TConstructor:\t" << this << endl;
     }
 
-    ~Tree()
+    Tree(const std::initializer_list<int>& il) :Tree()
     {
+        for (int const* it = il.begin(); it != il.end(); it++)
+        {
+            insert(*it, Root);
+        }
+    }
+
+    Tree(const Tree& other):Tree()
+    {
+        copy(other.Root);
+        cout << "CopyConstructor:\t" << this << endl;
+    }
+
+
+    ~Tree()
+
+    {
+        clear();
         cout << "TDestructor:\t" << this << endl;
     }
 
@@ -50,6 +75,11 @@ public:
         insert(Data, Root);
     }
 
+    void clear()
+    {
+        clear(Root);
+        Root = nullptr;
+    }
     int minValue()const
     {
         return minValue(Root);
@@ -63,6 +93,7 @@ public:
     void print()
     {
         print(Root);
+        cout << endl;
     }
 
     int size()const
@@ -80,6 +111,10 @@ public:
         return avg(Root);
     }
 
+    void erase(int Data)
+    {
+        return erase(Data, Root);
+    }
 private:
     void insert(int Data, Element*Root)
     {
@@ -102,6 +137,50 @@ private:
             if (Root->pRight == nullptr)Root->pRight = new Element(Data);
             else insert(Data, Root->pRight);
         }
+    }
+
+    void erase(int Data, Element*& Root)
+    {
+        if(Root == nullptr)return;
+        erase(Data, Root->pLeft);
+        erase(Data, Root->pRight);
+        if (Data==Root->Data)
+        {
+            if (Root->is_leaf())
+            {
+                delete Root;
+                Root = nullptr;
+            }
+            else
+            {
+                if (size(Root->pLeft) > size(Root->pRight))
+                {
+                    Root->Data = maxValue(Root->pLeft);
+                    erase(maxValue(Root->pLeft), Root->pLeft);
+                }
+                else
+                {
+                    Root->Data = minValue(Root->pRight);
+                    erase(minValue(Root->pRight), Root->pRight);
+                }
+            }
+        }
+    }
+
+    void clear(Element* Root)
+    {
+        if (Root == nullptr)return;
+        clear(Root->pLeft);
+        clear(Root->pRight);
+        delete Root;
+    }
+
+    void copy(Element* Root)
+    {
+        if (Root == nullptr)return;
+        insert(Root->Data, this->Root);
+        copy(Root->pLeft);
+        copy(Root->pRight);
     }
 
     int minValue(Element* Root)const
@@ -148,6 +227,41 @@ private:
     }
 };
 
+class UniqueTree : public Tree
+{
+    void insert(int Data, Element* Root)
+    {
+        if (this->Root == nullptr)
+        {
+            this->Root = new Element(Data);
+            return;
+        }
+        if (Root == nullptr)return;
+        if (Data < Root->Data)
+        {
+            if (Root->pLeft == nullptr)
+            {
+                Root->pLeft = new Element(Data);
+            }
+            else insert(Data, Root->pLeft);
+        }
+        else if(Data>Root->Data)
+        {
+            if (Root->pRight == nullptr)Root->pRight = new Element(Data);
+            else insert(Data, Root->pRight);
+        }
+    }
+
+    
+public:
+    void insert(int Data)
+    {
+        insert(Data, this->Root);
+    }
+};
+
+
+
 int factorial(int n)
 {
     if (n == 0)
@@ -166,19 +280,33 @@ double power(double a, int n)
     else return a * power(a, n - 1);
 }
 
+
+//#define BASE_CHECK
+
 int main()
 {
     setlocale(LC_ALL, "");
+#ifdef BASE_CHECK 
     int n;
     cin >> n;
-    Tree tree;
+    UniqueTree tree;
     for (size_t i = 0; i < n; i++)
     {
-        tree.insert(rand() % 100+2);
+        tree.insert(rand() % 100 + 2);
     }
     tree.print();
     cout << endl;
-    cout << tree.avg()<<endl;
+    cout << tree.avg() << endl;
+#endif // BASE_CHECK 
+
+    Tree tree = { 50,25,75,16,32,64,80,27,35 }; 
+    tree.print();
+    /*Tree tree2 = tree;
+    tree2.print();*/
+    int value;
+    cin >> value;
+    tree.erase(value);
+    tree.print();
    
 }
 
